@@ -7,7 +7,25 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+
+    if params[:sort_key]
+      session[:sort_key] = params[:sort_key]
+      
+    elsif session[:sort_key]
+      flag = true
+      params[:sort_key] = session[:sort_key]
+      
+    end
+
+    qstring =  Movie.order(params[:sort_key])  
+
+    @sort_key = session[:sort_key]
+
+    if (flag)
+      redirect_to movies_path(:sort_key => @sort_key)
+    else
+      @movies = qstring.all
+    end
   end
 
   def new
